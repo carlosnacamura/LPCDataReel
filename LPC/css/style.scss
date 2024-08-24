@@ -1,9 +1,10 @@
 @use "colors";
+@use "base";
 @use "cabecario";
+@use "download_button";
 
 * {
     margin: 0%;
     padding: 0%;
     box-sizing: border-box;
 }
-
