@@ -1,0 +1,9 @@
+@use "base";
+@use "colors";
+@use "box_shadow";
+
+main {
+    width: 95vw;
+    margin: auto;
+    box-shadow: box_shadow.$weak;
+}

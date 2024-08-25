@@ -18,6 +18,12 @@
   background-image: linear-gradient(25deg, #9AB5D9, #394759);
 }
 
+main {
+  width: 95vw;
+  margin: auto;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2039215686);
+}
+
 * {
   margin: 0%;
   padding: 0%;
