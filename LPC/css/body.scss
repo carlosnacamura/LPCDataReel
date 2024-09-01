@@ -1,5 +1,7 @@
 @use "base";
+@use "colors";
 
 body {
-    background-color: #ebedff;
+    background-color: colors.$primary-darker;
+    display: block;
 }

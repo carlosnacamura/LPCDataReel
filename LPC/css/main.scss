@@ -4,6 +4,43 @@
 
 main {
     width: 95vw;
+    min-height: 100vh;
     margin: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    flex-wrap: wrap;
     box-shadow: box_shadow.$weak;
+
+    .frase-efeito {
+        cite {
+            font-size: x-large;
+            text-align: center;
+        }
+
+        background-color: #ffffff1c;
+        box-shadow: 1px 1px 5px #ffffff1c;
+        border-radius: 1em;
+        padding: 1em;
+        margin: 1em;
+
+    }
+
+    section {
+        p {
+            text-indent: 1em;
+            padding-left: 1em;
+            padding-top: 5px;
+            border-left: 1px solid white;
+        }
+
+        article {
+            h2 {
+                padding: 10px;
+            }
+
+            padding: 10px;
+            margin-left: 1em;
+        }
+    }
 }
