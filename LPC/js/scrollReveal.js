@@ -1,0 +1,1 @@
+ScrollReveal().reveal('.imgDataRe',{delay: 1000});
