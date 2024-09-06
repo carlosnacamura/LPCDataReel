@@ -106,6 +106,9 @@ main section p {
   padding-top: 5px;
   border-left: 1px solid white;
 }
+.memes {
+  display: none;
+}
 main section article {
   padding: 10px;
   margin-left: 1em;
