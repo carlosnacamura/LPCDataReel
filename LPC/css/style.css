@@ -54,7 +54,7 @@
   justify-content: center;
   flex-direction: column;
 }
-.generic-button {
+.generic-button,#iniciarJogo {
   cursor: pointer;
   padding: 1em;
   text-decoration: none;

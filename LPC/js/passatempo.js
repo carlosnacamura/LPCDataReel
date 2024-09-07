@@ -5,129 +5,185 @@ const audio_pix = document.querySelector(".pix");
 const audio_sucesso = document.querySelector(".sucesso");
 const memes = document.querySelector(".memes");
 const pegar_cebolas = document.querySelector(".pegar_cebolas");
+const btnIniciar = document.getElementById("iniciarJogo");
 const cebolasPegas = 100;
+
 canvas.width = 600;
 canvas.height = 300;
-document.querySelector(".passatempo").appendChild(canvas)
+document.querySelector(".passatempo").appendChild(canvas);
+
 let bgReady = false;
 const bgImage = new Image();
 bgImage.onload = () => {
-  bgReady = true;
+    bgReady = true;
 };
-bgImage.src =
-  "https://img.freepik.com/fotos-premium/jogo-de-video-de-fundo-abstrato-de-esports-scifi-gaming-cyberpunk-vr-simulacao-de-realidade-virtual-e-cena-do-metaverso-suporte-pedestal-palco-ilustracao-3d-renderizacao-futurista-sala-de-brilho-de-neon_42100-4107.jpg";
+bgImage.src = "imgs/backgroundPassatempo.png";
+
 let heroReady = false;
 let heroImage = new Image();
 heroImage.onload = () => {
-  heroReady = true;
+    heroReady = true;
 };
 heroImage.src = "imgs/shrek.png";
+
 let monsterReady = false;
 let monsterImage = new Image();
 monsterImage.onload = () => {
-  monsterReady = true;
+    monsterReady = true;
 };
 monsterImage.src = "imgs/cebola.png";
 
 const hero = {
-  speed: 256,
-  x: 0,
-  y: 0,
+    speed: 256,
+    x: 0,
+    y: 0,
 };
+
 const monster = {
-  x: 0,
-  y: 0,
+    x: 0,
+    y: 0,
 };
+
 let monstrosPegos = 0;
+let tempoRestante = 30; 
+let jogoAcabou = true; 
+let then;
 
 const keysDown = {};
 
 addEventListener("keydown", (evt) => {
-  keysDown[evt.key] = true;
+    keysDown[evt.key] = true;
 });
+
 addEventListener("keyup", (evt) => {
-  delete keysDown[evt.key];
+    delete keysDown[evt.key];
 });
 
 const reset = () => {
-  hero.x = canvas.width / 2;
-  hero.y = canvas.height / 2;
-  monster.x = 32 + Math.random() * (canvas.width - 32);
-  monster.y = 32 + Math.random() * (canvas.height - 32);
+    hero.x = (canvas.width - 20) / 2;
+    hero.y = (canvas.height - 20) / 2;
+    monstrosPegos = 0;
+    tempoRestante = 30;
+    jogoAcabou = false;
+    reposicionarMonstro();
+    then = Date.now(); 
+};
+
+const reposicionarMonstro = () => {
+    monster.x = 32 + Math.random() * (canvas.width - 64);
+    monster.y = 32 + Math.random() * (canvas.height - 64);
 };
 
 const update = (modificador) => {
-  if (keysDown["w"]) {
-    hero.y -= hero.speed * modificador;
-  }
-  if (keysDown["s"]) {
-    hero.y += hero.speed * modificador;
-  }
-  if (keysDown["a"]) {
-    hero.x -= hero.speed * modificador;
-  }
-  if (keysDown["d"]) {
-    hero.x += hero.speed * modificador;
-  }
+    if (jogoAcabou) return;
 
-  if (
-    hero.x <= monster.x + 32 &&
-    monster.x <= hero.x + 32 &&
-    hero.y <= monster.y + 32 &&
-    monster.y <= hero.y + 32
-  ) {
-    ++monstrosPegos;
-    if (monstrosPegos % cebolasPegas == 0) {
-      audio_pix.play();
+    
+    tempoRestante -= modificador;
+
+    if (tempoRestante <= 0) {
+        tempoRestante = 0;
+        jogoAcabou = true;
+        alert("Game Over! Tempo esgotado.");
+        btnIniciar.style.display = "block"; 
+        return;
     }
-    audio_cebolas.play();
-    reset();
-  }
+
+    if (keysDown["w"] || keysDown["ArrowUp"] && hero.y > 0) {
+        hero.y -= hero.speed * modificador;
+    }
+
+    if (keysDown["s"] || keysDown["ArrowDown"] && hero.y < canvas.height - 32) {
+        hero.y += hero.speed * modificador;
+    }
+
+    if (keysDown["a"] || keysDown["ArrowLeft"] && hero.x > 0) {
+        hero.x -= hero.speed * modificador;
+    }
+
+    if (keysDown["d"] || keysDown["ArrowRight"] && hero.x < canvas.width - 32) {
+        hero.x += hero.speed * modificador;
+    }
+
+    if (
+        hero.x <= monster.x + 32 &&
+        monster.x <= hero.x + 32 &&
+        hero.y <= monster.y + 32 &&
+        monster.y <= hero.y + 32
+    ) {
+        ++monstrosPegos;
+
+        if (monstrosPegos % cebolasPegas == 0) {
+            audio_pix.play();
+        }
+
+        audio_cebolas.play();
+        reposicionarMonstro(); 
+    }
+
+    if (monstrosPegos >= 25) {
+        jogoAcabou = true;
+        alert("Parabéns! Você coletou 25 dados com nosso DataReel!.");
+        btnIniciar.style.display = "block"; 
+        return;
+    }
 };
+
 const render = () => {
-  if (bgReady) {
-    dimensao.drawImage(bgImage, 0, 0);
-  }
-  if (heroReady) {
-    dimensao.drawImage(heroImage, hero.x, hero.y);
-  }
-  if (monsterReady) {
-    dimensao.drawImage(monsterImage, monster.x, monster.y);
-  }
-  dimensao.fillStyle = "rgb(250,250,250)";
-  dimensao.font = "24px Helvetica";
-  dimensao.textAlign = "left";
-  dimensao.textBaseline = "top";
-  dimensao.fillText("Dados pegos: " + monstrosPegos, 32, 32);
+    if (bgReady) {
+        dimensao.drawImage(bgImage, 0, 0);
+    }
+
+    if (heroReady) {
+        dimensao.drawImage(heroImage, hero.x, hero.y);
+    }
+
+    if (monsterReady) {
+        dimensao.drawImage(monsterImage, monster.x, monster.y);
+    }
+
+    dimensao.fillStyle = "rgb(250,250,250)";
+    dimensao.font = "24px Helvetica";
+    dimensao.textAlign = "left";
+    dimensao.textBaseline = "top";
+    dimensao.fillText("Dados pegos: " + monstrosPegos, 32, 32);
+    dimensao.fillText("Tempo: " + Math.ceil(tempoRestante) + "s", 32, 64);
 };
 
 const main = () => {
-  const now = Date.now();
-  const delta = now - then;
+    if (jogoAcabou) return;
 
-  update(delta / 1000);
-  render();
+    const now = Date.now();
+    const delta = (now - then) / 1000;
 
-  then = now;
-  requestAnimationFrame(main);
+    update(delta);
+    render();
 
-  if (monstrosPegos == 5) {
-    memes.style.display = "block";
-  }
+    then = now;
+
+    requestAnimationFrame(main);
+
+    if (monstrosPegos == 30) {
+        memes.style.display = "block";
+    }
 };
 
 const w = window;
 const requestAnimationFrame =
-  w.requestAnimationFrame || w.webkitRequestAnimationFrame;
-let then = Date.now();
-reset();
-main();
+    w.requestAnimationFrame || w.webkitRequestAnimationFrame;
+
+btnIniciar.addEventListener("click", () => {
+    reset();
+    main();
+    btnIniciar.style.display = "none"; 
+});
+
 pegar_cebolas.addEventListener("click", () => {
-  monstrosPegos--;
-  if (monstrosPegos == 0) {
-    audio_sucesso.play();
-  } else if (monstrosPegos < 0) {
-    monstrosPegos = 0;
-    audio_sucesso.play();
-  }
+    if (jogoAcabou) return;
+
+    monstrosPegos--;
+
+    if (monstrosPegos <= 0) {
+        monstrosPegos = 0;
+        audio_sucesso.play();
+    }
 });
